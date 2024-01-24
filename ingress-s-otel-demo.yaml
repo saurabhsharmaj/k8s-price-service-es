@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-service
+  namespace: otel-service-ns
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    - host: desktop-epba0ro
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/price"
+            backend:
+              service:
+                name: price-service
+                port:
+                  number: 8080

@@ -1,0 +1,40 @@
+# spring-boot-deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: price-service-app
+  namespace: otel-service-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: price-service-app
+  template:
+    metadata:
+      labels:
+        app: price-service-app
+    spec:
+      containers:
+      - name: price-service-app
+        image: price-service/price-service:latest
+        ports:
+        - containerPort: 8080  # Specify the port your Spring Boot app is listening on
+        imagePullPolicy: IfNotPresent
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: price-service
+  namespace: otel-service-ns
+spec:
+  selector:
+    app: price-service-app
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080  # Specify the port your Spring Boot app is listening on
+      nodePort: 30011
+  type: NodePort  # Use 'LoadBalancer' if running in a cloud environment; use 'NodePort' or 'ClusterIP' for other environments
